@@ -31,49 +31,70 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const bgAudioRef = useRef<HTMLAudioElement | null>(null);
   const bosyAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Initialize audio elements
+  // Lazy audio getters so audio files are NOT downloaded on initial page load!
+  const getBgAudio = (): HTMLAudioElement => {
+    if (!bgAudioRef.current) {
+      const audio = new Audio();
+      audio.preload = 'none';
+      audio.src = '/audio/bg-birthday-trend.mp3';
+      audio.loop = true;
+      audio.volume = 0.45;
+      bgAudioRef.current = audio;
+    }
+    return bgAudioRef.current;
+  };
+
+  const getBosyAudio = (): HTMLAudioElement => {
+    if (!bosyAudioRef.current) {
+      const audio = new Audio();
+      audio.preload = 'none';
+      audio.src = '/audio/birthday-song.mp3';
+      audio.volume = bosyVolume;
+
+      audio.addEventListener('loadedmetadata', () => {
+        setBosyDuration(audio.duration || 21);
+      });
+
+      audio.addEventListener('timeupdate', () => {
+        setBosyCurrentTime(audio.currentTime);
+      });
+
+      audio.addEventListener('ended', () => {
+        setIsBosySongPlaying(false);
+        setBosyCurrentTime(0);
+        // Resume background beat after Bosy's song finishes
+        const bg = getBgAudio();
+        bg.play().then(() => setIsBgPlaying(true)).catch(() => {});
+      });
+
+      bosyAudioRef.current = audio;
+    }
+    return bosyAudioRef.current;
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
-    const bgAudio = new Audio('/audio/bg-birthday-trend.mp3');
-    bgAudio.loop = true;
-    bgAudio.volume = 0.45;
-    bgAudioRef.current = bgAudio;
-
-    const bosyAudio = new Audio('/audio/birthday-song.mp3');
-    bosyAudio.volume = 0.9;
-    bosyAudioRef.current = bosyAudio;
-
-    bosyAudio.addEventListener('loadedmetadata', () => {
-      setBosyDuration(bosyAudio.duration || 21);
-    });
-
-    bosyAudio.addEventListener('timeupdate', () => {
-      setBosyCurrentTime(bosyAudio.currentTime);
-    });
-
-    bosyAudio.addEventListener('ended', () => {
-      setIsBosySongPlaying(false);
-      setBosyCurrentTime(0);
-      // Optionally resume background song after Bosy's song ends!
-      bgAudio.play().then(() => setIsBgPlaying(true)).catch(() => {});
-    });
-
     return () => {
-      bgAudio.pause();
-      bosyAudio.pause();
+      if (bgAudioRef.current) {
+        bgAudioRef.current.pause();
+        bgAudioRef.current = null;
+      }
+      if (bosyAudioRef.current) {
+        bosyAudioRef.current.pause();
+        bosyAudioRef.current = null;
+      }
     };
   }, []);
 
   const playBgSong = () => {
-    // When playing background song, pause Bosy's song
     if (bosyAudioRef.current && isBosySongPlaying) {
       bosyAudioRef.current.pause();
       setIsBosySongPlaying(false);
     }
-    if (bgAudioRef.current) {
-      bgAudioRef.current.play().then(() => {
-        setIsBgPlaying(true);
-      }).catch(() => {});
-    }
+    const bg = getBgAudio();
+    bg.play().then(() => {
+      setIsBgPlaying(true);
+    }).catch(() => {});
   };
 
   const pauseBgSong = () => {
@@ -89,16 +110,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const playBosySong = () => {
-    // When Bosy plays her special song, the English trend song immediately pauses!
     if (bgAudioRef.current && isBgPlaying) {
       bgAudioRef.current.pause();
       setIsBgPlaying(false);
     }
-    if (bosyAudioRef.current) {
-      bosyAudioRef.current.play().then(() => {
-        setIsBosySongPlaying(true);
-      }).catch(() => {});
-    }
+    const bosy = getBosyAudio();
+    bosy.play().then(() => {
+      setIsBosySongPlaying(true);
+    }).catch(() => {});
   };
 
   const pauseBosySong = () => {
@@ -114,10 +133,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const seekBosySong = (time: number) => {
-    if (bosyAudioRef.current) {
-      bosyAudioRef.current.currentTime = time;
-      setBosyCurrentTime(time);
-    }
+    const bosy = getBosyAudio();
+    bosy.currentTime = time;
+    setBosyCurrentTime(time);
   };
 
   const handleSetBosyVolume = (vol: number) => {
@@ -129,12 +147,13 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleBosyMute = () => {
+    const bosy = getBosyAudio();
     if (isBosyMuted) {
       setIsBosyMuted(false);
-      if (bosyAudioRef.current) bosyAudioRef.current.volume = bosyVolume || 0.8;
+      bosy.volume = bosyVolume || 0.8;
     } else {
       setIsBosyMuted(true);
-      if (bosyAudioRef.current) bosyAudioRef.current.volume = 0;
+      bosy.volume = 0;
     }
   };
 
