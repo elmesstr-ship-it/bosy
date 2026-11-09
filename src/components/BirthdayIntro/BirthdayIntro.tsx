@@ -77,14 +77,12 @@ export const BirthdayIntro: React.FC<BirthdayIntroProps> = ({ theme, calculation
           : 'radial-gradient(circle at center, #240a2d 0%, #0d0312 100%)',
       }}
     >
-      {/* Ambient background orbs */}
+      {/* High-Performance Radial Ambient Lighting */}
       <div
-        className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-25 pointer-events-none"
-        style={{ backgroundColor: theme.palette.primary }}
-      />
-      <div
-        className="absolute w-[400px] h-[400px] rounded-full blur-[120px] opacity-20 pointer-events-none"
-        style={{ backgroundColor: theme.palette.secondary }}
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          background: `radial-gradient(circle at center, ${theme.palette.primary} 0%, transparent 65%)`,
+        }}
       />
 
       <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center justify-center min-h-[60vh] gap-6">

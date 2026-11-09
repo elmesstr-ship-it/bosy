@@ -71,14 +71,12 @@ export const SecretEnvelope: React.FC<SecretEnvelopeProps> = ({ theme, onOpenCom
               : 'radial-gradient(ellipse at center, #2e1038 0%, #110517 100%)',
           }}
         >
-          {/* Ambient Background Glows */}
+          {/* High-Performance Radial Ambient Lighting */}
           <div
-            className="absolute w-[500px] h-[500px] rounded-full blur-[130px] opacity-40 pointer-events-none animate-pulse-glow"
-            style={{ backgroundColor: theme.palette.primary }}
-          />
-          <div
-            className="absolute w-[350px] h-[350px] -bottom-20 -right-20 rounded-full blur-[100px] opacity-30 pointer-events-none"
-            style={{ backgroundColor: theme.palette.secondary }}
+            className="absolute inset-0 pointer-events-none opacity-35"
+            style={{
+              background: `radial-gradient(circle at center, ${theme.palette.primary} 0%, transparent 65%)`,
+            }}
           />
 
           {/* Heading Text Above Envelope */}

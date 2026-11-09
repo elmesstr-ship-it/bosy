@@ -98,8 +98,8 @@ export const WishesSection: React.FC<WishesSectionProps> = ({ theme, wishes }) =
                       ? 'bg-gradient-to-br from-fuchsia-950/80 to-purple-900/60 border-2 border-fuchsia-400 shadow-[0_10px_30px_rgba(236,72,153,0.4)]'
                       : 'bg-[#150522]/70 border border-fuchsia-500/30 hover:border-fuchsia-400/70 shadow-lg'
                     : isBlessed
-                    ? 'bg-gradient-to-br from-pink-900/60 to-purple-900/50 border-2 border-pink-400 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'
-                    : 'bg-white/5 border border-pink-300/30 hover:border-pink-400/60 shadow-lg backdrop-blur-md'
+                    ? 'bg-gradient-to-br from-pink-900/60 to-purple-900/50 border-2 border-pink-400 shadow-md'
+                    : 'bg-[#180a22]/80 border border-pink-300/30 hover:border-pink-400/60 shadow-md'
                 }`}
               >
                 {/* Subtle Glow on Blessed */}

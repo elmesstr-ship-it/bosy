@@ -35,8 +35,10 @@ function MainUniverse() {
 
   const handleEnterWorld = () => {
     completeIntro();
-    // Start background birthday trend music on user interaction
-    playBgSong();
+    // Smoothly defer background music slightly so DOM unmount/mount paints instantly
+    setTimeout(() => {
+      playBgSong();
+    }, 350);
   };
 
   return (
