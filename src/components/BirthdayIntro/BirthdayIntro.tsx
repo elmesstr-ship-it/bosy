@@ -136,12 +136,13 @@ export const BirthdayIntro: React.FC<BirthdayIntroProps> = ({ theme, calculation
               transition={{ duration: 1.1, ease: 'easeOut' }}
               className="flex flex-col items-center gap-6"
             >
-              {/* BOSY Animated Letters */}
+              {/* BOSY Animated Letters - strictly dir="ltr" so RTL never reverses order */}
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="flex items-center justify-center gap-2 sm:gap-4 font-editorial text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-widest text-transparent bg-clip-text drop-shadow-[0_0_35px_rgba(244,114,182,0.6)]"
+                dir="ltr"
+                className="flex flex-row items-center justify-center gap-2 sm:gap-4 font-editorial text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-widest text-transparent bg-clip-text drop-shadow-[0_0_35px_rgba(244,114,182,0.6)]"
                 style={{
                   backgroundImage: isDarkCyber
                     ? 'linear-gradient(135deg, #ffffff 0%, #ec4899 50%, #a855f7 100%)'
