@@ -47,6 +47,14 @@ export interface BirthdayThemeConfig {
     fontFamily: string;
     stampColor: string;
   };
+  music: {
+    songUrl: string;
+    songTitle: string;
+    songArtist: string;
+    songBadge: string;
+    durationSec: number;
+    youtubeUrl: string;
+  };
 }
 
 export interface BirthdayCalculation {

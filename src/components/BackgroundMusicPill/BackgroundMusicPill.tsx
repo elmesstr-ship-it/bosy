@@ -19,7 +19,7 @@ export const BackgroundMusicPill: React.FC<BackgroundMusicPillProps> = ({ theme 
         onClick={toggleBgSong}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        title="موسيقى الاحتفال الأجنبية (Go shawty it's your birthday)"
+        title="موسيقى الاستقبال — أنت الحظ (عمرو دياب)"
         className={`flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border shadow-xl backdrop-blur-xl transition-all cursor-pointer ${
           isBgPlaying
             ? isDarkCyber
@@ -37,10 +37,10 @@ export const BackgroundMusicPill: React.FC<BackgroundMusicPillProps> = ({ theme 
 
         <div className="flex flex-col text-left">
           <span className="font-editorial text-[10px] sm:text-xs font-bold tracking-wider leading-none">
-            {isBgPlaying ? "IT'S YOUR BIRTHDAY 🎶" : 'PLAY BIRTHDAY BEAT'}
+            {isBgPlaying ? "AMR DIAB — ENTA EL HAZ 🎶" : 'PLAY WELCOME MUSIC'}
           </span>
           <span className="text-[9px] text-neutral-300/80 font-mono leading-none mt-0.5 hidden sm:inline">
-            {isBosySongPlaying ? '(متوقفة مؤقتاً لأغنية بوسي)' : '50 Cent Trend'}
+            {isBosySongPlaying ? '(متوقفة مؤقتاً لأغنية بوسي)' : 'عمرو دياب — أنت الحظ'}
           </span>
         </div>
 

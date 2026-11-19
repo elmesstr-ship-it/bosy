@@ -29,6 +29,14 @@ export function useBirthdayEdition(): UseBirthdayEditionReturn {
         const parsed = new Date(devDate);
         if (!isNaN(parsed.getTime())) return parsed;
       }
+      const year = params.get('year') || params.get('edition');
+      if (year) {
+        const parsedYear = parseInt(year, 10);
+        if (!isNaN(parsedYear)) {
+          // July 4th of requested year
+          return new Date(parsedYear, 6, 4, 12, 0, 0);
+        }
+      }
     }
     return null;
   }, []);

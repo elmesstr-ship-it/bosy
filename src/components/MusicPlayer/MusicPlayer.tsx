@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { BirthdayThemeConfig } from '../../birthday/types';
 import { useAudio } from '../../context/AudioContext';
 import { Play, Pause, Volume2, VolumeX, Disc, ExternalLink, Music, Sparkles } from 'lucide-react';
@@ -18,11 +18,15 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
     setBosyVolume,
     isBosyMuted,
     toggleBosyMute,
+    setSongSource,
   } = useAudio();
 
-  const officialLinks = {
-    youtube: 'https://www.youtube.com/watch?v=HhbmEicUOhg&t=79s',
-  };
+  // Switch song source if theme changes
+  useEffect(() => {
+    if (theme.music && theme.music.songUrl) {
+      setSongSource(theme.music.songUrl, theme.music.durationSec);
+    }
+  }, [theme.music, setSongSource]);
 
   const formatTime = (secs: number) => {
     if (isNaN(secs)) return '0:00';
@@ -44,7 +48,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
           </div>
 
           <h2 className="font-arabic text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-            أغنية اليوم لبوسي ❤️
+            {theme.music.songTitle} ❤️
           </h2>
 
           <p className="font-arabic text-xs sm:text-sm md:text-base text-rose-200/90 max-w-lg mx-auto">
@@ -89,18 +93,18 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
             <div className="flex-1 w-full space-y-3.5 text-right">
               <div>
                 <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/30 text-[10px] font-arabic text-pink-300 mb-1.5">
-                  <span>المقطع المميز لبوسي (1:19 — 1:40)</span>
+                  <span>{theme.music.songBadge}</span>
                   <Sparkles className="w-3 h-3 text-amber-300" />
                 </div>
                 <h3 className="font-arabic font-bold text-lg sm:text-xl text-white">
-                  تفوت ألف سنة وأنا زي ما أنا ❤️
+                  {theme.music.songTitle} ❤️
                 </h3>
                 <p className="font-arabic text-xs text-pink-200/80">
-                  أحمد موزه السلطان • مقصوصة ومخصصة لبوسي
+                  {theme.music.songArtist}
                 </p>
               </div>
 
-              {/* Lightweight CSS Waveform Bars (16 bars instead of 32 animated framer divs) */}
+              {/* Lightweight CSS Waveform Bars */}
               <div className="flex items-center justify-between gap-1 h-7 px-1">
                 {Array.from({ length: 18 }).map((_, i) => (
                   <div
@@ -120,7 +124,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
                 <input
                   type="range"
                   min={0}
-                  max={bosyDuration || 21}
+                  max={bosyDuration || theme.music.durationSec}
                   step={0.1}
                   value={bosyCurrentTime}
                   onChange={(e) => seekBosySong(parseFloat(e.target.value))}
@@ -128,7 +132,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
                 />
                 <div className="flex justify-between text-[11px] text-neutral-400 font-mono">
                   <span>{formatTime(bosyCurrentTime)}</span>
-                  <span>{formatTime(bosyDuration)}</span>
+                  <span>{formatTime(bosyDuration || theme.music.durationSec)}</span>
                 </div>
               </div>
 
@@ -178,15 +182,15 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ theme }) => {
           {/* YouTube Link */}
           <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-xs">
             <span className="font-arabic text-neutral-400 text-[11px]">
-              استمعي للمهرجان كاملاً:
+              استمعي للأغنية الأصلية على يوتيوب:
             </span>
             <a
-              href={officialLinks.youtube}
+              href={theme.music.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-200 text-xs transition-colors"
             >
-              <span>YouTube الرسمي (1:19)</span>
+              <span>YouTube الرسمي</span>
               <ExternalLink className="w-2.5 h-2.5" />
             </a>
           </div>

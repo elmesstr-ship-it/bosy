@@ -142,13 +142,23 @@ export const BirthdayIntro: React.FC<BirthdayIntroProps> = ({ theme, calculation
                 dir="ltr"
                 className="flex flex-row items-center justify-center gap-2 sm:gap-4 font-editorial text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-widest text-transparent bg-clip-text drop-shadow-[0_0_35px_rgba(244,114,182,0.6)]"
                 style={{
+                  direction: 'ltr',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  unicodeBidi: 'isolate',
                   backgroundImage: isDarkCyber
                     ? 'linear-gradient(135deg, #ffffff 0%, #ec4899 50%, #a855f7 100%)'
                     : 'linear-gradient(135deg, #ffffff 0%, #f472b6 40%, #fde047 100%)',
                 }}
               >
                 {bosyLetters.map((char, index) => (
-                  <motion.span key={index} variants={letterVariants} className="inline-block">
+                  <motion.span
+                    key={index}
+                    variants={letterVariants}
+                    dir="ltr"
+                    style={{ direction: 'ltr' }}
+                    className="inline-block"
+                  >
                     {char}
                   </motion.span>
                 ))}

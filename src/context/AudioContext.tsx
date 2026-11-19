@@ -16,6 +16,7 @@ interface AudioContextType {
   setBosyVolume: (vol: number) => void;
   isBosyMuted: boolean;
   toggleBosyMute: () => void;
+  setSongSource: (url: string, duration?: number) => void;
 }
 
 const AudioContext = createContext<AudioContextType | null>(null);
@@ -24,21 +25,22 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isBgPlaying, setIsBgPlaying] = useState<boolean>(false);
   const [isBosySongPlaying, setIsBosySongPlaying] = useState<boolean>(false);
   const [bosyCurrentTime, setBosyCurrentTime] = useState<number>(0);
-  const [bosyDuration, setBosyDuration] = useState<number>(21); // exactly 21 seconds (1:19 to 1:40)
+  const [bosyDuration, setBosyDuration] = useState<number>(21);
   const [bosyVolume, setBosyVolume] = useState<number>(0.9);
   const [isBosyMuted, setIsBosyMuted] = useState<boolean>(false);
+  const [activeSongUrl, setActiveSongUrl] = useState<string>('/audio/birthday-song.mp3');
 
   const bgAudioRef = useRef<HTMLAudioElement | null>(null);
   const bosyAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Lazy audio getters so audio files are NOT downloaded on initial page load!
+  // Lazy audio getters
   const getBgAudio = (): HTMLAudioElement => {
     if (!bgAudioRef.current) {
       const audio = new Audio();
       audio.preload = 'none';
-      audio.src = '/audio/bg-birthday-trend.mp3';
+      audio.src = '/audio/amr-diab-enta-el-haz.mp3';
       audio.loop = true;
-      audio.volume = 0.45;
+      audio.volume = 0.5;
       bgAudioRef.current = audio;
     }
     return bgAudioRef.current;
@@ -48,7 +50,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!bosyAudioRef.current) {
       const audio = new Audio();
       audio.preload = 'none';
-      audio.src = '/audio/birthday-song.mp3';
+      audio.src = activeSongUrl;
       audio.volume = bosyVolume;
 
       audio.addEventListener('loadedmetadata', () => {
@@ -62,7 +64,6 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       audio.addEventListener('ended', () => {
         setIsBosySongPlaying(false);
         setBosyCurrentTime(0);
-        // Resume background beat after Bosy's song finishes
         const bg = getBgAudio();
         bg.play().then(() => setIsBgPlaying(true)).catch(() => {});
       });
@@ -72,7 +73,24 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return bosyAudioRef.current;
   };
 
-  // Cleanup on unmount
+  const setSongSource = (url: string, duration?: number) => {
+    if (activeSongUrl !== url) {
+      setActiveSongUrl(url);
+      if (bosyAudioRef.current) {
+        const wasPlaying = isBosySongPlaying;
+        bosyAudioRef.current.pause();
+        bosyAudioRef.current.src = url;
+        bosyAudioRef.current.load();
+        setBosyCurrentTime(0);
+        if (duration) setBosyDuration(duration);
+        if (wasPlaying) {
+          bosyAudioRef.current.play().catch(() => {});
+        }
+      }
+    }
+  };
+
+  // Cleanup
   useEffect(() => {
     return () => {
       if (bgAudioRef.current) {
@@ -175,6 +193,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setBosyVolume: handleSetBosyVolume,
         isBosyMuted,
         toggleBosyMute,
+        setSongSource,
       }}
     >
       {children}

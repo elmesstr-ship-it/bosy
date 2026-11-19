@@ -11,7 +11,6 @@ import { MusicPlayer } from './components/MusicPlayer/MusicPlayer';
 import { WishesSection } from './components/WishesSection/WishesSection';
 import { SecretSurprise } from './components/SecretSurprise/SecretSurprise';
 import { FinalScene } from './components/FinalScene/FinalScene';
-import { DevPreviewBar } from './components/DevPreviewBar/DevPreviewBar';
 import { BackgroundMusicPill } from './components/BackgroundMusicPill/BackgroundMusicPill';
 import { AudioProvider, useAudio } from './context/AudioContext';
 
@@ -22,11 +21,8 @@ function MainUniverse() {
     content,
     isEnvelopeOpened,
     openEnvelope,
-    resetEnvelope,
     isIntroPassed,
     completeIntro,
-    simulatedDate,
-    setQuickPreset,
   } = useBirthdayEdition();
 
   const { playBgSong } = useAudio();
@@ -98,15 +94,6 @@ function MainUniverse() {
           <FinalScene theme={theme} calculation={calculation} />
         </main>
       )}
-
-      {/* Development Theme Preview Toolbar */}
-      <DevPreviewBar
-        calculation={calculation}
-        theme={theme}
-        simulatedDate={simulatedDate}
-        onSetPreset={setQuickPreset}
-        onResetEnvelope={resetEnvelope}
-      />
     </div>
   );
 }
